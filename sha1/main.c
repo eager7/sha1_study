@@ -31,6 +31,7 @@ int main()
     SHA1Context sha;  
     int i, j, err;  
     uint8_t Message_Digest[20];  
+    uint8_t Message_Result[20];  
 	
 	PrintArray(key);
 	PrintArray(challenge);
@@ -66,6 +67,30 @@ int main()
 		}  
 		printf("\n");  
 	}    
-  
+	
+	SHA1Reset(&sha);
+	memcpy(&TEST[sizeof(key)], Message_Digest, sizeof(Message_Digest));
+    err = SHA1Input(&sha, (const unsigned char *) TEST, sizeof(TEST));  
+	if (err)  
+	{  
+		fprintf(stderr, "SHA1Input Error %d.\n", err );  
+		return -1; 
+	}  
+	
+	err = SHA1Result(&sha, Message_Result);  
+	if (err)  
+	{  
+		fprintf(stderr,"SHA1Result Error %d, could not compute message digest.\n", err );  
+		return -1;
+	}  
+	else  
+	{  
+		printf("SHA-1:\t");  
+		for(i = 0; i < 20 ; ++i)  
+		{  
+			printf("%02X ", Message_Result[i]);  
+		}  
+		printf("\n");  
+	}    
     return 0;  
 }  
